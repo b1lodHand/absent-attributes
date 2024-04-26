@@ -1,1 +1,1 @@
-MOST OF THE CODE IN THIS PROJECT DON'T BELONG TO ME.
+I'm new at editor programming so there might be some mistakes here and there.
