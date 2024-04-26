@@ -1,0 +1,17 @@
+{
+  "name": "com.absence.attributes",
+  "version": "1.0.1",
+  "displayName": "absent-attributes",
+  "description": "my attributes (in terms of unity dev, obv).",
+  "unity": "2022.3",
+  "unityRelease": "13f1",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "keywords": [],
+  "author": {
+    "name": "absencee_",
+    "email": "",
+    "url": "https://github.com/b1lodHand/"
+  }
+}

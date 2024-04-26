@@ -1,0 +1,16 @@
+{
+    "name": "com.absence.attributes.Editor",
+    "rootNamespace": "com.absence.attributes.Editor",
+    "references": [
+        "GUID:e5f854fd2471dfa47aaa01d9d727e226"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
