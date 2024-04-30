@@ -1,32 +1,19 @@
-using UnityEngine;
-using System;
+
 
 namespace com.absence.attributes
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
-    public class HideIfAttribute : PropertyAttribute
+    public class HideIfAttribute : BaseIfAttribute
     {
-        public string PropertyName { get; private set; }
-        public object TargetValue { get; private set; }
-        public bool DirectBool { get; private set; }
-        public bool Invert { get; protected set; }
-
-        public HideIfAttribute(string comparedPropertyName)
+        public HideIfAttribute(string comparedPropertyName) : base(comparedPropertyName)
         {
-            this.PropertyName = comparedPropertyName;
-            this.TargetValue = null;
-
-            Invert = false;
-            DirectBool = true;
+            this.outputMethod = OutputMethod.ShowHide;
+            this.invert = false;
         }
 
-        public HideIfAttribute(string comparedPropertyName, object targetValue)
+        public HideIfAttribute(string comparedPropertyName, object targetValue) : base(comparedPropertyName, targetValue)
         {
-            this.PropertyName = comparedPropertyName;
-            this.TargetValue = targetValue;
-
-            Invert = false;
-            DirectBool = false;
+            this.outputMethod = OutputMethod.ShowHide;
+            this.invert = false;
         }
     }
 }
