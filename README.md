@@ -24,6 +24,7 @@ https://github.com/b1lodHand/absent-people.git
 All you need to do is copying the URLs above and pasting them into you package manager.
 
 ![Imgur Image](https://imgur.com/cX3OF72.png)
+
 You can open the Package Manager via selecting Window/Package Manager options on the toolbar of Unity itself.
 
 ### Installing
