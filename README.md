@@ -13,13 +13,14 @@ Hello dear! You just stepped onto a completely free and open-source dialogue sys
 Well, in order have this tool working properly you'll need to do a few things. The instructions below will lead you on the way.
 
 ### Prerequisites
-First of all, this tool depends on some of my other tools. No, no, no, no! Don't run away! They are so lightweight andeasy to setup. All you need to do is to copy the URLs below and paste them one by one into the Git URL section of the Package Manager of your project.
+First of all, this tool depends on some of my other tools. No, no, no, no! Don't run away! They are so lightweight and easy to setup.
+
+```
+https://github.com/b1lodHand/absent-variables.git
+https://github.com/b1lodHand/absent-people.git
+```
 
 ![Imgur Image](https://imgur.com/cX3OF72.png)
-
-```
-Give examples
-```
 
 ### Installing
 
