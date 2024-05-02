@@ -16,7 +16,7 @@ Well, in order have this tool working properly you'll need to do a few things. T
 First of all, this tool depends on some of my other tools. No, no, no, no! Don't run away! They are so lightweight and easy to setup.
 
 ```
-https://github.com/b1lodHand/absent-variables.git
+[https://github.com/b1lodHand/absent-variables.git]
 https://github.com/b1lodHand/absent-people.git
 ```
 
