@@ -42,7 +42,7 @@ namespace com.absence.attributes.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUI.FloatField(startRect, tempMin);
+            tempMin = EditorGUI.FloatField(startRect, tempMin);
 
             startRect.x += spacing;
             startRect.x += fixedFieldSize;
@@ -54,7 +54,7 @@ namespace com.absence.attributes.Editor
             startRect.x += sliderSize;
             startRect.width = fixedFieldSize;
 
-            EditorGUI.FloatField(startRect, tempMax);
+            tempMax = EditorGUI.FloatField(startRect, tempMax);
 
             if (tempMin < m_minMax.min) tempMin = m_minMax.min;
             else if (tempMin > tempMax) tempMin = tempMax;
