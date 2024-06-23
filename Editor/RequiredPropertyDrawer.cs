@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     [CustomPropertyDrawer(typeof(RequiredAttribute))]
     public class RequiredPropertyDrawer : PropertyDrawer

@@ -1,8 +1,7 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     [CustomPropertyDrawer(typeof(HelpBoxAttribute))]
     public class HelpBoxDecoratorDrawer : DecoratorDrawer

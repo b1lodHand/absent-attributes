@@ -1,8 +1,7 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     /// <summary>
     /// Used to manipulate the drawing process of a property with a control. (do NOT use with custom class drawers.)

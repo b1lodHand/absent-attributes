@@ -2,7 +2,7 @@ using com.absence.attributes.imported;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
     public class MinMaxSliderPropertyDrawer : PropertyDrawer

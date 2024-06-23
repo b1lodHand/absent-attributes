@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     [CustomEditor(typeof(UnityEngine.Object), true)]
     public class ButtonEditorExtension : UnityEditor.Editor

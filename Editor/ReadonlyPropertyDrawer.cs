@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace com.absence.attributes.Editor
+namespace com.absence.attributes.editor
 {
     [CustomPropertyDrawer(typeof(ReadonlyAttribute))]
     public class ReadonlyPropertyDrawer : PropertyDrawer
