@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using com.absence.attributes.imported;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,11 +16,14 @@ namespace com.absence.attributes.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var startRect = EditorGUI.PrefixLabel(position, label);
+            position = EditorGUI.PrefixLabel(position, label);
 
-            var fixedFieldSize = 50f;
-            var spacing = 5f;
-            var sliderSize = startRect.width - (2 * (fixedFieldSize + spacing));
+            const float fixedFieldSize = 1f;
+            const float fixedSliderSize = 3f;
+            Rect[] rects = Helpers.SliceRectHorizontally(position, 3, Helpers.K_SPACING, 0f, fixedFieldSize, fixedSliderSize, fixedFieldSize);
+            Rect minValueRect = rects[0];
+            Rect sliderRect = rects[1];
+            Rect maxValueRect = rects[2];
 
             var tempMin = 0f;
             var tempMax = 0f;
@@ -38,23 +40,13 @@ namespace com.absence.attributes.Editor
                 tempMax = property.vector2IntValue.y;
             }
 
-            startRect.width = fixedFieldSize;
-
             EditorGUI.BeginChangeCheck();
 
-            tempMin = EditorGUI.FloatField(startRect, tempMin);
+            tempMin = EditorGUI.FloatField(minValueRect, tempMin);
 
-            startRect.x += spacing;
-            startRect.x += fixedFieldSize;
-            startRect.width = sliderSize;
+            EditorGUI.MinMaxSlider(sliderRect, ref tempMin, ref tempMax, m_minMax.min, m_minMax.max);
 
-            EditorGUI.MinMaxSlider(startRect, ref tempMin, ref tempMax, m_minMax.min, m_minMax.max);
-
-            startRect.x += spacing;
-            startRect.x += sliderSize;
-            startRect.width = fixedFieldSize;
-
-            tempMax = EditorGUI.FloatField(startRect, tempMax);
+            tempMax = EditorGUI.FloatField(maxValueRect, tempMax);
 
             if (tempMin < m_minMax.min) tempMin = m_minMax.min;
             else if (tempMin > tempMax) tempMin = tempMax;
