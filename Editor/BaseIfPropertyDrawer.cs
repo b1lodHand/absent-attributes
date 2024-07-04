@@ -20,7 +20,7 @@ namespace com.absence.attributes.editor
         bool Check(SerializedProperty property)
         {
             var baseIf = attribute as BaseIfAttribute;
-            string path = (property.propertyPath.Contains(".") && !property.propertyPath.Contains("Array")) ? System.IO.Path.ChangeExtension(property.propertyPath, baseIf.controlPropertyName) :
+            string path = (property.propertyPath.Contains(".") && !property.propertyPath.EndsWith(".Array.")) ? System.IO.Path.ChangeExtension(property.propertyPath, baseIf.controlPropertyName) :
                 baseIf.controlPropertyName;
 
             var comparedField = property.serializedObject.FindProperty(path);
