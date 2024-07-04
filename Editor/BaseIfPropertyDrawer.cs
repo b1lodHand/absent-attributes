@@ -25,7 +25,7 @@ namespace com.absence.attributes.editor
 
             string path = baseIf.controlPropertyName;
 
-            var comparedField = property.serializedObject.FindProperty(path);
+            var comparedField = property.FindPropertyRelative(path);
 
             if (comparedField == null)
             {
