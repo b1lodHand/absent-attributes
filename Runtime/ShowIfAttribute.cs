@@ -1,8 +1,6 @@
-
-
 namespace com.absence.attributes
 {
-    public class ShowIfAttribute : BaseIfAttribute
+    public sealed class ShowIfAttribute : BaseIfAttribute
     {
         public ShowIfAttribute(string comparedPropertyName) : base(comparedPropertyName)
         {

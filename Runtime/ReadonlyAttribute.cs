@@ -4,7 +4,7 @@ using UnityEngine;
 namespace com.absence.attributes
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class ReadonlyAttribute : PropertyAttribute
+    public sealed class ReadonlyAttribute : PropertyAttribute
     {
         public ReadonlyAttribute() { }
     }

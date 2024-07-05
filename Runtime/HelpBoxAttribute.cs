@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace com.absence.attributes
 {
-    public class HelpBoxAttribute : PropertyAttribute
+    public sealed class HelpBoxAttribute : PropertyAttribute
     {
         public string message { get; private set; }
         public HelpBoxType boxType { get; private set; }

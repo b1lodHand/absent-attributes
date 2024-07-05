@@ -21,12 +21,14 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.Linq;
 using UnityEngine;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.absence.attributes.editor")]
+
 namespace com.absence.attributes.imported
 {
     /// <summary>
     /// Holds some handy functions.
     /// </summary>
-    public static class Helpers
+    internal static class Helpers
     {
         public const float K_SPACING = 5f;
         public const float K_PADDING = 5f;

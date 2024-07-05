@@ -1,0 +1,27 @@
+{
+    "name": "com.absence.editor.gui.attributes.editor",
+    "rootNamespace": "com.absence.attributes.editor",
+    "references": [
+        "GUID:88640cb29df3afa4683b1f74e210deb5",
+        "GUID:6de74c6477f76a74d984eb9adddf7666"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ABSENCE_EDITOR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.absence.editor",
+            "expression": "1.0.1",
+            "define": "ABSENCE_EDITOR"
+        }
+    ],
+    "noEngineReferences": false
+}
