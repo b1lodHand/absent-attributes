@@ -1,6 +1,6 @@
 {
-    "name": "com.absence.attributes.Editor",
-    "rootNamespace": "com.absence.attributes.Editor",
+    "name": "com.absence.attributes.editor",
+    "rootNamespace": "com.absence.attributes.editor",
     "references": [
         "GUID:e5f854fd2471dfa47aaa01d9d727e226"
     ],
