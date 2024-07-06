@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace com.absence.attributes
 {
+    /// <summary>
+    /// Abstract class that provides conditional attributes a base.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public abstract class BaseIfAttribute : PropertyAttribute
     {

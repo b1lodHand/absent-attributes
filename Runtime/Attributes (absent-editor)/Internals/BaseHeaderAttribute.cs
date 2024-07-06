@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace com.absence.attributes.internals
 {
+    /// <summary>
+    /// Abstract class that provides header attributes a base.
+    /// </summary>
     public abstract class BaseHeaderAttribute : PropertyAttribute
     {
         public enum HeaderType

@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace com.absence.attributes
 {
+    /// <summary>
+    /// Creates a helpbox.
+    /// </summary>
     public sealed class HelpBoxAttribute : PropertyAttribute
     {
         public string message { get; private set; }

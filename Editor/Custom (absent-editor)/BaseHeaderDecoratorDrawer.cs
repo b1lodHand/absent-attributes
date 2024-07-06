@@ -1,6 +1,5 @@
 using com.absence.attributes.internals;
 using com.absence.editor.gui;
-using System;
 using UnityEditor;
 using UnityEngine;
 

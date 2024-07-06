@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace com.absence.attributes
 {
+    /// <summary>
+    /// Creates a button that invokes the specific method.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class ButtonAttribute : PropertyAttribute
     {

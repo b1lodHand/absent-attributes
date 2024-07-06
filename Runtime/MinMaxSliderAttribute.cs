@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace com.absence.attributes
 {
+    /// <summary>
+    /// Creates a slider with two knobs that represents x and y values of a <see cref="Vector3"/> or <see cref="Vector3Int"/>.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class MinMaxSliderAttribute : PropertyAttribute
     {

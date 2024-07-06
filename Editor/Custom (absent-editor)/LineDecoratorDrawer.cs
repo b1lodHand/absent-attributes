@@ -17,7 +17,8 @@ namespace com.absence.attributes.editor
 
         public override void OnGUI(Rect position)
         {
-            absentGUI.DrawLine(position);
+            if (line.colorSet) absentGUI.DrawLine(position, line.color);
+            else absentGUI.DrawLine(position);
         }
     }
 }

@@ -1,5 +1,8 @@
 namespace com.absence.attributes
 {
+    /// <summary>
+    /// Hides the specific field if the target property is true.
+    /// </summary>
     public sealed class HideIfAttribute : BaseIfAttribute
     {
         public HideIfAttribute(string comparedPropertyName) : base(comparedPropertyName)

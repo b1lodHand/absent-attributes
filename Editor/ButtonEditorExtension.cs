@@ -7,7 +7,7 @@ using UnityEngine;
 namespace com.absence.attributes.editor
 {
     [CustomEditor(typeof(UnityEngine.Object), true)]
-    public class ButtonEditorExtension : UnityEditor.Editor
+    public class ButtonEditorExtension : Editor
     {
         public override void OnInspectorGUI()
         {
