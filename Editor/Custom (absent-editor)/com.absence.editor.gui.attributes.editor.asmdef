@@ -14,13 +14,13 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "ABSENCE_EDITOR"
+        "ABSENT_EDITOR_EXISTS"
     ],
     "versionDefines": [
         {
             "name": "com.absence.editor",
             "expression": "1.0.1",
-            "define": "ABSENCE_EDITOR"
+            "define": "ABSENT_EDITOR_EXISTS"
         }
     ],
     "noEngineReferences": false

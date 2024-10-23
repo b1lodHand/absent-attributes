@@ -21,8 +21,6 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.Linq;
 using UnityEngine;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.absence.attributes.editor")]
-
 namespace com.absence.attributes.imported
 {
     /// <summary>
