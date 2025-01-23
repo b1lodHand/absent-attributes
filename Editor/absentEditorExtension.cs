@@ -94,19 +94,27 @@ namespace com.absence.attributes.editor
                 richText = true,
             };
 
-            string vertStyle = beginVertical.style;
-            string vertLabel = beginVertical.label;
+            string style = beginVertical.style;
+            string label = beginVertical.label;
 
-            if (vertStyle != null)
+            if (style != null)
             {
-                if (vertLabel != null) GUILayout.BeginVertical(vertLabel, vertStyle);
-                else GUILayout.BeginVertical(vertStyle);
+                if (label != null)
+                {
+                    if (label == "window") GUILayout.BeginVertical(label, style);
+                    else
+                    {
+                        EditorGUILayout.BeginVertical(style);
+                        EditorGUILayout.LabelField(label, style2);
+                    }
+                }
+                else EditorGUILayout.BeginVertical(style);
             }
 
             else
             {
                 EditorGUILayout.BeginVertical();
-                if (vertLabel != null) EditorGUILayout.LabelField(vertLabel);
+                if (label != null) EditorGUILayout.LabelField(label, style2);
             }
         }
 
@@ -123,19 +131,27 @@ namespace com.absence.attributes.editor
                 richText = true,
             };
 
-            string vertStyle = beginHorizontal.style;
-            string vertLabel = beginHorizontal.label;
+            string style = beginHorizontal.style;
+            string label = beginHorizontal.label;
 
-            if (vertStyle != null)
+            if (style != null)
             {
-                if (vertLabel != null) GUILayout.BeginHorizontal(vertLabel, vertStyle);
-                else GUILayout.BeginHorizontal(vertStyle);
+                if (label != null)
+                {
+                    if (style == "window") GUILayout.BeginHorizontal(label, style);
+                    else
+                    {
+                        EditorGUILayout.BeginHorizontal(style);
+                        EditorGUILayout.LabelField(label, style2);
+                    }
+                }
+                else EditorGUILayout.BeginHorizontal(style);
             }
 
             else
             {
                 EditorGUILayout.BeginHorizontal();
-                if (vertLabel != null) EditorGUILayout.LabelField(vertLabel);
+                if (label != null) EditorGUILayout.LabelField(label);
             }
         }
 
@@ -263,26 +279,26 @@ namespace com.absence.attributes.editor
 
                     #endregion
 
-                    bool hasBeginHorizontal = FindAttribute(fieldInfo, out BeginHorizontalAttribute beginHorizontal);
-                    bool hasBeginVertical = FindAttribute(fieldInfo, out BeginVerticalAttribute beginVertical);
-                    bool hasBeginReadonly = FindAttribute(fieldInfo, out BeginReadonlyGroupAttribute beginReadonlyAttribute);
-                    bool hasBeginFoldout = FindAttribute(fieldInfo, out BeginFoldoutGroupAttribute beginFoldoutAttribute);
-                    bool hasEndFoldout = FindAttribute(fieldInfo, out EndFoldoutGroupAttribute endFoldoutAttribute);
-                    bool hasEndReadonly = FindAttribute(fieldInfo, out EndReadonlyGroupAttribute endReadonlyAttribute);
-                    bool hasEndHorizontal = FindAttribute(fieldInfo, out EndHorizontalAttribute endHorizontal);
-                    bool hasEndVertical = FindAttribute(fieldInfo, out EndVerticalAttribute endVertical);
+                    bool hasBeginHorizontal = FindAttributes(fieldInfo, out List<BeginHorizontalAttribute> beginHorizontal);
+                    bool hasBeginVertical = FindAttributes(fieldInfo, out List<BeginVerticalAttribute> beginVertical);
+                    bool hasBeginReadonly = FindAttributes(fieldInfo, out List<BeginReadonlyGroupAttribute> beginReadonlyAttribute);
+                    bool hasBeginFoldout = FindAttributes(fieldInfo, out List<BeginFoldoutGroupAttribute> beginFoldoutAttribute);
+                    bool hasEndFoldout = FindAttributes(fieldInfo, out List<EndFoldoutGroupAttribute> endFoldoutAttribute);
+                    bool hasEndReadonly = FindAttributes(fieldInfo, out List<EndReadonlyGroupAttribute> endReadonlyAttribute);
+                    bool hasEndHorizontal = FindAttributes(fieldInfo, out List<EndHorizontalAttribute> endHorizontal);
+                    bool hasEndVertical = FindAttributes(fieldInfo, out List<EndVerticalAttribute> endVertical);
 
                     List<BaseBeginLayoutAttribute> beginAttributes = new();
-                    if (hasBeginHorizontal) beginAttributes.Add(beginHorizontal);
-                    if (hasBeginVertical) beginAttributes.Add(beginVertical);
-                    if (hasBeginFoldout) beginAttributes.Add(beginFoldoutAttribute);
-                    if (hasBeginReadonly) beginAttributes.Add(beginReadonlyAttribute);
+                    if (hasBeginHorizontal) beginAttributes.AddRange(beginHorizontal);
+                    if (hasBeginVertical) beginAttributes.AddRange(beginVertical);
+                    if (hasBeginFoldout) beginAttributes.AddRange(beginFoldoutAttribute);
+                    if (hasBeginReadonly) beginAttributes.AddRange(beginReadonlyAttribute);
 
                     List<BaseEndLayoutAttribute> endAttributes = new();
-                    if (hasEndReadonly) endAttributes.Add(endReadonlyAttribute);
-                    if (hasEndFoldout) endAttributes.Add(endFoldoutAttribute);
-                    if (hasEndVertical) endAttributes.Add(endVertical);
-                    if (hasEndHorizontal) endAttributes.Add(endHorizontal);
+                    if (hasEndReadonly) endAttributes.AddRange(endReadonlyAttribute);
+                    if (hasEndFoldout) endAttributes.AddRange(endFoldoutAttribute);
+                    if (hasEndVertical) endAttributes.AddRange(endVertical);
+                    if (hasEndHorizontal) endAttributes.AddRange(endHorizontal);
 
                     beginAttributes = beginAttributes.OrderBy(attr => attr.order).ToList();
                     endAttributes =  endAttributes.OrderBy(attr => attr.order).ToList();
@@ -373,10 +389,16 @@ namespace com.absence.attributes.editor
             }
         }
 
+        bool FindAttributes<T>(FieldInfo fieldInfo, out List<T> result) where T : Attribute
+        {
+            result = fieldInfo.GetCustomAttributes(typeof(T), true).ToList().ConvertAll(raw => raw as T);
+            if (result == null || result.Count == 0) return false;
+
+            return true;
+        }
         bool FindAttribute<T>(FieldInfo fieldInfo, out T result) where T : Attribute
         {
             result = fieldInfo.GetCustomAttribute<T>();
-
             if (result == null) return false;
 
             return true;

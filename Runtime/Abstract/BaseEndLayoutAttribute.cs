@@ -10,5 +10,9 @@ namespace com.absence.attributes.internals
         public BaseEndLayoutAttribute()
         {
         }
+
+        public BaseEndLayoutAttribute(string helper)
+        {
+        }
     }
 }

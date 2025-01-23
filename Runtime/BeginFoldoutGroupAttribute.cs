@@ -3,10 +3,9 @@ using System;
 
 namespace com.absence.attributes.experimental
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class BeginFoldoutGroupAttribute : BaseBeginLayoutAttribute
     {
-        internal bool toggle = false;
         public bool toggleOnLabelClick = true;
 
         public BeginFoldoutGroupAttribute() : base()
