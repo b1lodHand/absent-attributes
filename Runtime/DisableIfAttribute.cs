@@ -1,3 +1,5 @@
+using com.absence.attributes.internals;
+
 namespace com.absence.attributes
 {
     /// <summary>

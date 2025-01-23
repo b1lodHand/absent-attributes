@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace com.absence.attributes
+namespace com.absence.attributes.internals
 {
     /// <summary>
     /// Abstract class that provides conditional attributes a base.
