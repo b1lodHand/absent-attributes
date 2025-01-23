@@ -14,6 +14,7 @@ namespace com.absence.attributes.editor
     {
         static Dictionary<string, FieldInfo> s_fieldInfos = new();
         static Dictionary<BeginFoldoutGroupAttribute, bool> s_togglePairs = new();
+        static Dictionary<UnityEngine.Object, Editor> s_editorPairs = new();
 
         static Stack<bool> s_activeFoldoutGroups = new();
         static bool s_foldoutBlocks = false;
@@ -317,7 +318,103 @@ namespace com.absence.attributes.editor
                     {
                         if (!s_foldoutBlocks)
                         {
-                            EditorGUILayout.PropertyField(iterator, true);
+                            bool hasInlineEditor = FindAttribute(fieldInfo, out InlineEditorAttribute inlineEditorAttribute);
+
+                            UnityEngine.Object value = iterator.objectReferenceValue;
+
+                            if (hasInlineEditor)
+                            {
+                                if (iterator.propertyType != SerializedPropertyType.ObjectReference)
+                                    throw new Exception("InlineEditor can only be used with types that derives from 'UnityEngine.Object'.");
+
+                                if (value == null)
+                                {
+                                    EditorGUILayout.BeginHorizontal();
+
+                                    EditorGUILayout.PropertyField(iterator, true);
+
+                                    int buttonId = inlineEditorAttribute.fieldButtonId;
+                                    bool drawButton = buttonId != 0;
+                                    if (drawButton)
+                                    {
+                                        GUIStyle style4 = new(GUI.skin.button)
+                                        {
+                                            richText = true,
+                                            //alignment = TextAnchor.MiddleCenter,
+                                        };
+
+                                        if (GUILayout.Button("<b>New</b>", style4, GUILayout.Width(40f)))
+                                        {
+                                            if (!FieldButtonMethodDatabase.Invoke(buttonId))
+                                                Debug.Log("There are no actions associated with this button at the moment. Create one with 'FieldButtonId' attribute.");
+                                        }
+                                    }
+
+                                    EditorGUILayout.EndHorizontal();
+                                }
+
+                                else
+                                {
+                                    GUIStyle style3 = new(EditorStyles.foldout)
+                                    {
+                                        richText = true,
+                                        //alignment = TextAnchor.MiddleCenter,
+                                    };
+
+                                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                                    EditorGUILayout.BeginHorizontal();
+
+                                    EditorGUI.indentLevel++;
+
+                                    iterator.isExpanded = EditorGUILayout.Foldout(iterator.isExpanded,
+                                        iterator.displayName, true, style3);
+
+                                    EditorGUILayout.PropertyField(iterator, new(""), true);
+
+                                    EditorGUI.indentLevel--;
+
+                                    EditorGUILayout.EndHorizontal();
+                                    EditorGUILayout.EndVertical();
+
+                                    if (!s_editorPairs.ContainsKey(value))
+                                        s_editorPairs.Add(value, null);
+
+                                    Editor targetEditor = s_editorPairs[value];
+
+                                    try
+                                    {
+                                        if (targetEditor == null) Editor.CreateCachedEditor(value, null, ref targetEditor);
+                                        else if (!targetEditor.serializedObject.targetObject.Equals(targetEditor)) Editor.CreateCachedEditor(value, null, ref targetEditor);
+                                    }
+
+                                    catch
+                                    {
+                                        Editor.CreateCachedEditor(value, null, ref targetEditor);
+                                    }
+
+                                    if (iterator.isExpanded)
+                                    {
+                                        EditorGUILayout.BeginVertical(GUI.skin.box);
+                                        EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+
+                                        EditorGUI.indentLevel++;
+
+                                        targetEditor.OnInspectorGUI();
+
+                                        EditorGUI.indentLevel--;
+
+                                        EditorGUILayout.EndVertical();
+                                        EditorGUILayout.EndVertical();
+                                    }
+                                }
+                            } 
+
+                            else
+                            {
+                                EditorGUILayout.PropertyField(iterator, true);
+                            }
+
+                            if (s_readonlyDifference > 0) GUI.enabled = false;
                         }
                     }
 
