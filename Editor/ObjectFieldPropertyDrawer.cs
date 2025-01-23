@@ -25,7 +25,7 @@ namespace com.absence.attributes.editor
 
             position.height = OBJECT_FIELD_HEIGHT;
 
-            value = EditorGUI.ObjectField(position, actualLabel, value, p_attribute.Type, false);
+            value = EditorGUI.ObjectField(position, actualLabel, value, p_attribute.type, p_attribute.AllowSceneObjects);
 
             if (EditorGUI.EndChangeCheck())
             {
