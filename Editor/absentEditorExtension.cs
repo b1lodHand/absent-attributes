@@ -302,10 +302,8 @@ namespace com.absence.attributes.editor
 
                 EditorGUI.indentLevel++;
 
-                EditorGUILayout.PrefixLabel(iterator.displayName, style3);
+                DrawDefaultField(iterator);
                 Rect rect = GUILayoutUtility.GetLastRect();
-
-                DrawDefaultField(iterator, "");
 
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
                 float height = EditorGUIUtility.singleLineHeight;
@@ -320,8 +318,6 @@ namespace com.absence.attributes.editor
                 EditorGUI.indentLevel--;
 
                 EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.Space(spacing / 2f);
 
                 EditorGUILayout.EndVertical();
 
