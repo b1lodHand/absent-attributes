@@ -62,7 +62,7 @@ namespace com.absence.attributes.editor
 
         public override void OnInspectorGUI()
         {
-            bool needsMark = DrawInspector(serializedObject);
+            bool needsMark = DrawInspector(serializedObject, target);
             //DrawDefaultInspector();
 
             DrawButtons(target);
@@ -73,7 +73,7 @@ namespace com.absence.attributes.editor
 
         #region General Methods
 
-        static bool DrawInspector(SerializedObject serializedObject)
+        static bool DrawInspector(SerializedObject serializedObject, UnityEngine.Object target)
         {
             bool result = false;
 
@@ -146,7 +146,7 @@ namespace com.absence.attributes.editor
 
                 using (new EditorGUI.DisabledScope("m_Script" == iterator.propertyPath))
                 {
-                    DrawField(iterator, fieldInfo);
+                    DrawField(iterator, fieldInfo, target);
                     if (s_readonlyDifference > 0) GUI.enabled = false;
                 }
 
@@ -213,7 +213,7 @@ namespace com.absence.attributes.editor
                 //}
             }
         }
-        static void DrawField(SerializedProperty iterator, FieldInfo fieldInfo)
+        static void DrawField(SerializedProperty iterator, FieldInfo fieldInfo, UnityEngine.Object target)
         {
             if (s_foldoutBlocks)
                 return;
@@ -222,7 +222,7 @@ namespace com.absence.attributes.editor
 
             if (hasInlineEditor)
             {
-                DrawInlineEditorField(iterator, inlineEditorAttribute);
+                DrawInlineEditorField(iterator, inlineEditorAttribute, target);
                 return;
             }
 
@@ -239,7 +239,7 @@ namespace com.absence.attributes.editor
 
             EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
         }
-        static void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute)
+        static void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute, UnityEngine.Object target)
         {
             UnityEngine.Object value = iterator.objectReferenceValue;
 
@@ -265,7 +265,7 @@ namespace com.absence.attributes.editor
 
                 DrawDefaultField(iterator);
 
-                FieldButtonManager.Sender = value; 
+                FieldButtonManager.Sender = target; 
 
                 bool buttonPressedSuccessfully = FieldButtonManager.
                     ButtonGUI(buttonId, new("New"), null, out object buttonOutput,
