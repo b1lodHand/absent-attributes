@@ -273,18 +273,18 @@ namespace com.absence.attributes.editor
 
                 EditorGUILayout.EndHorizontal();
 
-                if (!buttonPressedSuccessfully)
-                    return;
+                //if (!buttonPressedSuccessfully)
+                //    return;
 
-                try
-                {
-                    iterator.objectReferenceValue = (UnityEngine.Object)buttonOutput;
-                }
+                //try
+                //{
+                //    iterator.objectReferenceValue = (UnityEngine.Object)buttonOutput;
+                //}
 
-                catch (Exception e)
-                {
-                    Debug.LogError($"Something went wrong with the 'New' button of InlineEditor:\n\n{e.ToString()}");
-                }
+                //catch (Exception e)
+                //{
+                //    Debug.LogError($"Something went wrong with the 'New' button of InlineEditor:\n\n{e.ToString()}");
+                //}
             }
 
             void DrawFullInlineEditor()
