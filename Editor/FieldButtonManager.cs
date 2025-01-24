@@ -172,11 +172,12 @@ namespace com.absence.attributes.editor
 
         #region Built-in Methods
 
-        [FieldButtonId(0, priority = -1)]
+        [FieldButtonId(0, priority = int.MaxValue)]
         static void NullId()
         {
             Debug.Log("This is the default field button method (id = 0).");
         }
+
         #endregion
     }
 }
