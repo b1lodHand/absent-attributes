@@ -237,8 +237,7 @@ namespace com.absence.attributes.editor
         {
             if (overrideLabel == null) overrideLabel = iterator.displayName;
 
-            if (iterator.hasVisibleChildren) EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
-            else EditorGUILayout.PropertyField(iterator, new(overrideLabel), false);
+            EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
         }
         static void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute)
         {
