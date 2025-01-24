@@ -340,14 +340,22 @@ namespace com.absence.attributes.editor
                     Editor.CreateCachedEditor(value, null, ref targetEditor);
                 }
 
-                if (iterator.isExpanded && targetEditor.target != null)
+                if (iterator.isExpanded)
                 {
                     EditorGUILayout.BeginVertical(GUI.skin.box);
                     EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
 
                     EditorGUI.indentLevel++;
 
-                    targetEditor.OnInspectorGUI();
+                    try
+                    {
+                        targetEditor.OnInspectorGUI();
+                    }
+
+                    catch (Exception e)
+                    {
+                        EditorGUILayout.LabelField($"Something went wrong:\n\n{e.ToString()}");
+                    }
 
                     EditorGUI.indentLevel--;
 
