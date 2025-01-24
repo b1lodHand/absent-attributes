@@ -140,7 +140,7 @@ namespace com.absence.attributes.editor
             if (!pressed) 
                 return false;
 
-            bool result = Invoke(id, out output);
+            bool result = Invoke(id, out output, args);
 
             if (!result)
                 Debug.Log($"There are no actions associated with this button at the moment (id = {id}). Create one with 'FieldButtonId' attribute.");
