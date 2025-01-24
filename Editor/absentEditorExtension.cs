@@ -315,8 +315,8 @@ namespace com.absence.attributes.editor
 
                 try
                 {
-                    if (targetEditor == null) Editor.CreateCachedEditor(value, null, ref targetEditor);
-                    else if (!targetEditor.serializedObject.targetObject.Equals(targetEditor)) Editor.CreateCachedEditor(value, null, ref targetEditor);
+                    if (targetEditor == null) Editor.CreateCachedEditorWithContext(value, target, null, ref targetEditor);
+                    else if (!targetEditor.serializedObject.targetObject.Equals(targetEditor)) Editor.CreateCachedEditorWithContext(value, target, null, ref targetEditor);
                 }
 
                 catch
