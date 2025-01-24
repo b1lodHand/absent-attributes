@@ -265,13 +265,9 @@ namespace com.absence.attributes.editor
 
                 DrawDefaultField(iterator);
 
-                FieldButtonManager.Sender = target; 
-
                 bool buttonPressedSuccessfully = FieldButtonManager.
-                    ButtonGUI(buttonId, new("New"), null, out object buttonOutput,
+                    ButtonGUI(buttonId, new("New"), null, new object[] { target }, out object buttonOutput,
                     GUILayout.Width(40f));
-
-                FieldButtonManager.Sender = null;
 
                 EditorGUILayout.EndHorizontal();
 

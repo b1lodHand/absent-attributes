@@ -12,8 +12,6 @@ namespace com.absence.attributes.editor
     /// </summary>
     public static class FieldButtonManager
     {
-        public static UnityEngine.Object Sender { get; internal set; }
-
         public const bool DEBUG_MODE = false;
         public const BindingFlags FLAGS = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
@@ -91,9 +89,9 @@ namespace com.absence.attributes.editor
         /// </summary>
         /// <param name="id">The target id.</param>
         /// <returns>Return false if there are no methods with the corresponding id, true otherwise.</returns>
-        public static bool Invoke(int id)
+        public static bool Invoke(int id, params object[] args)
         {
-            return Invoke(id, out _);
+            return Invoke(id, out _, args);
         }
 
         /// <summary>
@@ -102,12 +100,12 @@ namespace com.absence.attributes.editor
         /// <param name="id">The target id.</param>
         /// <param name="output">Outputs null if this method returns false. Output of the called static method otherwise.</param>
         /// <returns>Returns false if anything goes wrong, true otherwise.</returns>
-        public static bool Invoke(int id, out object output)
+        public static bool Invoke(int id, out object output, params object[] args)
         {
             output = null;
             if (!s_pairs.ContainsKey(id)) return false;
 
-            output = s_pairs[id].Invoke(null, null);
+            output = s_pairs[id].Invoke(null, args);
             return true;
         }
 
@@ -119,9 +117,9 @@ namespace com.absence.attributes.editor
         /// <param name="style">The GUIStyle of button. Optional, leave null if you will use the default style.</param>
         /// <param name="options">The GUILayout options.</param>
         /// <returns>Returns false if anything goes wrong or if simply the button does not get pressed, true otherwise.</returns>
-        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, params GUILayoutOption[] options)
+        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, object[] args, params GUILayoutOption[] options)
         {
-            return ButtonGUI(id, content, style, out _, options);
+            return ButtonGUI(id, content, style, args, out _, options);
         }
 
         /// <summary>
@@ -133,7 +131,7 @@ namespace com.absence.attributes.editor
         /// <param name="output">The GUIStyle of button. Optional, leave null if you will use the default style.</param>
         /// <param name="output">Outputs null if this method returns false. Output of the called static method otherwise.</param>
         /// <returns>Returns false if anything goes wrong or if simply the button does not get pressed, true otherwise.</returns>
-        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, out object output, params GUILayoutOption[] options)
+        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, object[] args, out object output, params GUILayoutOption[] options)
         {
             output = null;
 
