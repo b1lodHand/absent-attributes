@@ -12,6 +12,8 @@ namespace com.absence.attributes.editor
     /// </summary>
     public static class FieldButtonManager
     {
+        public static UnityEngine.Object Sender { get; internal set; }
+
         public const bool DEBUG_MODE = false;
         public const BindingFlags FLAGS = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
