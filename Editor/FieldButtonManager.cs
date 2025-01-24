@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace com.absence.attributes.editor
 {
-    public static class FieldButtonMethodDatabase
+    public static class FieldButtonManager
     {
         public const BindingFlags FLAGS = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
         static Dictionary<int, MethodInfo> s_pairs;
@@ -52,6 +52,63 @@ namespace com.absence.attributes.editor
 
             s_pairs[id].Invoke(null, null);
             return true;
+        }
+
+        public static bool Invoke(int id, out object output)
+        {
+            output = null;
+            if (!s_pairs.ContainsKey(id)) return false;
+
+            output = s_pairs[id].Invoke(null, null);
+            return true;
+        }
+
+        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, params GUILayoutOption[] options)
+        {
+            bool pressed = DrawButton(content, style, options);
+
+            if (!pressed)
+                return false;
+
+            bool result = Invoke(id);
+
+            if (!result)
+                Debug.Log("There are no actions associated with this button at the moment. Create one with 'FieldButtonId' attribute.");
+
+            return result;
+        }
+
+        public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, out object output, params GUILayoutOption[] options)
+        {
+            output = null;
+
+            bool pressed = DrawButton(content, style, options);
+
+            if (!pressed) 
+                return false;
+
+            bool result = Invoke(id, out output);
+
+            if (!result)
+                Debug.Log("There are no actions associated with this button at the moment. Create one with 'FieldButtonId' attribute.");
+
+            return result;
+        }
+
+        static bool DrawButton(GUIContent content, GUIStyle style, params GUILayoutOption[] options)
+        {
+            bool hasContent = content != null;
+
+            if (!hasContent)
+                throw new Exception("Button can not get drawn without content!");
+
+            bool pressed;
+            bool hasStyle = style != null;
+
+            if (hasStyle) pressed = GUILayout.Button(content, style, options);
+            else pressed = GUILayout.Button(content, options);
+
+            return pressed;
         }
 
         [FieldButtonId(0)]
