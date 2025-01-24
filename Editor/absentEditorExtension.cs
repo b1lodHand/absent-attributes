@@ -340,7 +340,7 @@ namespace com.absence.attributes.editor
                     Editor.CreateCachedEditor(value, null, ref targetEditor);
                 }
 
-                if (iterator.isExpanded)
+                if (iterator.isExpanded && targetEditor.target != null)
                 {
                     EditorGUILayout.BeginVertical(GUI.skin.box);
                     EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
