@@ -10,10 +10,17 @@ namespace com.absence.attributes.experimental
     public class InlineEditorAttribute : Attribute
     {
         /// <summary>
-        /// If not-set or '0', no buttons will get drawn. A field button with this id and the label: 
-        /// 'New' will get drawn at the right side of the field marked with this attribute otherwise.
+        /// If not-set or '0', no buttons will get drawn. Otherwise a field button with this id and the label: 
+        /// 'New' will get drawn at the right side of the field marked with this attribute if 
+        /// its value is null otherwise.
         /// </summary>
-        public int fieldButtonId = 0;
+        public int newButtonId = 0;
+        /// <summary>
+        /// If not-set or '0', no buttons will get drawn. Otherwise a field button with this id and the label: 
+        /// 'Del' will get drawn at the right side of the field marked with this attribute if 
+        /// its value is not null.
+        /// </summary>
+        public int delButtonId = 0;
 
         public InlineEditorAttribute()
         {

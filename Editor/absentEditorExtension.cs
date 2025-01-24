@@ -248,11 +248,11 @@ namespace com.absence.attributes.editor
 
             if (value == null)
             {
-                int buttonId = inlineEditorAttribute.fieldButtonId;
+                int buttonId = inlineEditorAttribute.newButtonId;
                 bool drawButton = buttonId != 0;
 
                 if (!drawButton) DrawDefaultField(iterator);
-                else DrawFieldWithNewButton(buttonId);
+                else DrawFieldWithButton(buttonId, "New");
 
                 return;
             }
@@ -261,15 +261,15 @@ namespace com.absence.attributes.editor
 
             return;
 
-            void DrawFieldWithNewButton(int buttonId)
+            void DrawFieldWithButton(int buttonId, string buttonText)
             {
                 EditorGUILayout.BeginHorizontal();
 
                 DrawDefaultField(iterator);
 
                 bool buttonPressedSuccessfully = FieldButtonManager.
-                    ButtonGUI(buttonId, new("New"), null, new object[] { target }, out object buttonOutput,
-                    GUILayout.Width(40f));
+                    ButtonGUI(buttonId, new(buttonText), null, new object[] { target }, out object buttonOutput,
+                    GUILayout.MaxWidth(40f));
 
                 EditorGUILayout.EndHorizontal();
 
@@ -289,8 +289,6 @@ namespace com.absence.attributes.editor
 
             void DrawFullInlineEditor()
             {
-                Debug.Log(target.name);
-
                 GUIStyle style3 = new(EditorStyles.foldoutHeader)
                 {
                     richText = true,
@@ -302,7 +300,11 @@ namespace com.absence.attributes.editor
 
                 EditorGUI.indentLevel++;
 
-                DrawDefaultField(iterator);
+                int delButtonId = inlineEditorAttribute.delButtonId;
+                bool drawDeleteButton = delButtonId != 0;
+                if (drawDeleteButton) DrawFieldWithButton(delButtonId, "Del");
+                else DrawDefaultField(iterator);
+
                 Rect rect = GUILayoutUtility.GetLastRect();
 
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
@@ -366,6 +368,7 @@ namespace com.absence.attributes.editor
 
             return true;
         }
+
         static bool FindAttributes(Type attributeType, FieldInfo fieldInfo, out List<object> result) 
         {
             result = fieldInfo.GetCustomAttributes(attributeType, true).ToList();
@@ -373,6 +376,7 @@ namespace com.absence.attributes.editor
 
             return true;
         }
+
         static bool FindAttribute<T>(FieldInfo fieldInfo, out T result) where T : Attribute
         {
             result = fieldInfo.GetCustomAttribute<T>();
