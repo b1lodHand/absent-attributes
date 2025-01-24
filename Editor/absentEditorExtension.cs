@@ -309,11 +309,12 @@ namespace com.absence.attributes.editor
                 float height = EditorGUIUtility.singleLineHeight;
 
                 rect.x -= spacing;
+                rect.x -= height;
                 rect.width += height;
                 rect.height = height;
 
                 iterator.isExpanded = EditorGUI.Foldout(rect, iterator.isExpanded,
-                    "", true);
+                    "", true, new GUIStyle());
 
                 EditorGUI.indentLevel--;
 
