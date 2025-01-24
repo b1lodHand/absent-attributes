@@ -291,7 +291,7 @@ namespace com.absence.attributes.editor
             {
                 Debug.Log(target.name);
 
-                GUIStyle style3 = new(EditorStyles.foldout)
+                GUIStyle style3 = new(EditorStyles.foldoutHeader)
                 {
                     richText = true,
                     //alignment = TextAnchor.MiddleCenter,
@@ -302,14 +302,27 @@ namespace com.absence.attributes.editor
 
                 EditorGUI.indentLevel++;
 
-                iterator.isExpanded = EditorGUILayout.Foldout(iterator.isExpanded,
-                    iterator.displayName, true, style3);
+                EditorGUILayout.PrefixLabel(iterator.displayName, style3);
+                Rect rect = GUILayoutUtility.GetLastRect();
 
                 DrawDefaultField(iterator, "");
+
+                float spacing = EditorGUIUtility.standardVerticalSpacing;
+                float height = EditorGUIUtility.singleLineHeight;
+
+                rect.x -= spacing;
+                rect.width += height;
+                rect.height = height;
+
+                iterator.isExpanded = EditorGUI.Foldout(rect, iterator.isExpanded,
+                    "", true);
 
                 EditorGUI.indentLevel--;
 
                 EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(spacing / 2f);
+
                 EditorGUILayout.EndVertical();
 
                 if (!m_editorPairs.ContainsKey(value))
