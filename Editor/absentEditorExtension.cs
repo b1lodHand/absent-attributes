@@ -12,19 +12,19 @@ namespace com.absence.attributes.editor
     [CustomEditor(typeof(UnityEngine.Object), true)]
     public class absentEditorExtension : Editor
     {
-        static Dictionary<string, FieldInfo> s_fieldInfos = new();
-        static Dictionary<BeginFoldoutGroupAttribute, bool> s_togglePairs = new();
-        static Dictionary<UnityEngine.Object, Editor> s_editorPairs = new();
+        Dictionary<string, FieldInfo> m_fieldInfos = new();
+        Dictionary<BeginFoldoutGroupAttribute, bool> m_togglePairs = new();
+        Dictionary<UnityEngine.Object, Editor> m_editorPairs = new();
 
-        static Stack<bool> s_activeFoldoutGroups = new();
-        static bool s_foldoutBlocks = false;
+        Stack<bool> m_activeFoldoutGroups = new();
+        bool m_foldoutBlocks = false;
 
-        static int s_foldoutDifference = 0;
-        static int s_readonlyDifference = 0;
-        static int s_horizontalDifference = 0;
-        static int s_verticalDifference = 0;
+        int m_foldoutDifference = 0;
+        int m_readonlyDifference = 0;
+        int m_horizontalDifference = 0;
+        int m_verticalDifference = 0;
 
-        static readonly Dictionary<Type, Action<BaseBeginLayoutAttribute>> s_beginActions = new()
+        static readonly Dictionary<Type, Action<absentEditorExtension, BaseBeginLayoutAttribute>> s_beginActions = new()
         {
             { typeof(BeginHorizontalAttribute), OnBeginHorizontal },
             { typeof(BeginVerticalAttribute), OnBeginVertical },
@@ -32,7 +32,7 @@ namespace com.absence.attributes.editor
             { typeof(BeginReadonlyGroupAttribute), OnBeginReadonly },
         };
 
-        static readonly Dictionary<Type, Action<BaseEndLayoutAttribute>> s_endActions = new()
+        static readonly Dictionary<Type, Action<absentEditorExtension, BaseEndLayoutAttribute>> s_endActions = new()
         {
             { typeof(EndReadonlyGroupAttribute), OnEndReadonly },
             { typeof(EndFoldoutGroupAttribute), OnEndFoldout },
@@ -48,11 +48,11 @@ namespace com.absence.attributes.editor
             BindingFlags.NonPublic |
             BindingFlags.Public);
 
-            s_fieldInfos = new();
+            m_fieldInfos = new();
             for (int i = 0; i < fieldInfos.Length; i++)
             {
                 FieldInfo fieldInfo = fieldInfos[i];
-                s_fieldInfos.Add(fieldInfo.Name, fieldInfo);
+                m_fieldInfos.Add(fieldInfo.Name, fieldInfo);
             }
         }
         private void OnDisable()
@@ -73,7 +73,7 @@ namespace com.absence.attributes.editor
 
         #region General Methods
 
-        static bool DrawInspector(SerializedObject serializedObject, UnityEngine.Object target)
+        bool DrawInspector(SerializedObject serializedObject, UnityEngine.Object target)
         {
             bool result = false;
 
@@ -82,14 +82,14 @@ namespace com.absence.attributes.editor
             SerializedProperty iterator = serializedObject.GetIterator();
             bool enterChildren = true;
 
-            s_foldoutBlocks = false;
+            m_foldoutBlocks = false;
 
-            s_activeFoldoutGroups.Clear();
+            m_activeFoldoutGroups.Clear();
 
-            s_foldoutDifference = 0;
-            s_readonlyDifference = 0;
-            s_horizontalDifference = 0;
-            s_verticalDifference = 0;
+            m_foldoutDifference = 0;
+            m_readonlyDifference = 0;
+            m_horizontalDifference = 0;
+            m_verticalDifference = 0;
 
             while (iterator.NextVisible(enterChildren))
             {
@@ -98,8 +98,8 @@ namespace com.absence.attributes.editor
                 #region Initialization
 
                 FieldInfo fieldInfo = null;
-                if (s_fieldInfos.ContainsKey(iterator.name))
-                    fieldInfo = s_fieldInfos[iterator.name];
+                if (m_fieldInfos.ContainsKey(iterator.name))
+                    fieldInfo = m_fieldInfos[iterator.name];
 
                 bool bypass = fieldInfo == null;
                 if (bypass)
@@ -139,7 +139,7 @@ namespace com.absence.attributes.editor
                 for (int i = 0; i < beginAttributes.Count; i++)
                 {
                     var attr = beginAttributes[i];
-                    s_beginActions[attr.GetType()]?.Invoke(attr);
+                    s_beginActions[attr.GetType()]?.Invoke(this, attr);
                 }
 
                 EditorGUI.BeginChangeCheck();
@@ -147,26 +147,26 @@ namespace com.absence.attributes.editor
                 using (new EditorGUI.DisabledScope("m_Script" == iterator.propertyPath))
                 {
                     DrawField(iterator, fieldInfo, target);
-                    if (s_readonlyDifference > 0) GUI.enabled = false;
+                    if (m_readonlyDifference > 0) GUI.enabled = false;
                 }
 
                 for (int i = 0; i < endAttributes.Count; i++)
                 {
                     var attr = endAttributes[i];
-                    s_endActions[attr.GetType()]?.Invoke(attr);
+                    s_endActions[attr.GetType()]?.Invoke(this,attr);
                 }
             }
 
-            if (s_readonlyDifference != 0)
+            if (m_readonlyDifference != 0)
                 throw new Exception("BeginReadonlyGroup and EndReadonlyGroup attribures should match!");
 
-            if (s_foldoutDifference != 0)
+            if (m_foldoutDifference != 0)
                 throw new Exception("BeginFoldoutGroup and EndFoldoutGroup attribures should match!");
 
-            if (s_horizontalDifference != 0)
+            if (m_horizontalDifference != 0)
                 Debug.LogWarning("BeginHorizontal and EndHorizontal attributes do not match.");
 
-            if (s_verticalDifference != 0)
+            if (m_verticalDifference != 0)
                 Debug.LogWarning("BeginVertical and EndVertical attributes do not match.");
 
             serializedObject.ApplyModifiedProperties();
@@ -175,7 +175,7 @@ namespace com.absence.attributes.editor
             return result;
 
         }
-        static void DrawButtons(UnityEngine.Object target)
+        void DrawButtons(UnityEngine.Object target)
         {
             IEnumerable<MethodInfo> methods = target.GetType()
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -213,9 +213,9 @@ namespace com.absence.attributes.editor
                 //}
             }
         }
-        static void DrawField(SerializedProperty iterator, FieldInfo fieldInfo, UnityEngine.Object target)
+        void DrawField(SerializedProperty iterator, FieldInfo fieldInfo, UnityEngine.Object target)
         {
-            if (s_foldoutBlocks)
+            if (m_foldoutBlocks)
                 return;
 
             bool hasInlineEditor = FindAttribute(fieldInfo, out InlineEditorAttribute inlineEditorAttribute);
@@ -233,13 +233,13 @@ namespace com.absence.attributes.editor
 
         #region Field-Specific Methods
 
-        static void DrawDefaultField(SerializedProperty iterator, string overrideLabel = null)
+        void DrawDefaultField(SerializedProperty iterator, string overrideLabel = null)
         {
             if (overrideLabel == null) overrideLabel = iterator.displayName;
 
             EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
         }
-        static void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute, UnityEngine.Object target)
+        void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute, UnityEngine.Object target)
         {
             UnityEngine.Object value = iterator.objectReferenceValue;
 
@@ -312,15 +312,15 @@ namespace com.absence.attributes.editor
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndVertical();
 
-                if (!s_editorPairs.ContainsKey(value))
-                    s_editorPairs.Add(value, null);
+                if (!m_editorPairs.ContainsKey(value))
+                    m_editorPairs.Add(value, null);
 
-                Editor targetEditor = s_editorPairs[value];
+                Editor targetEditor = m_editorPairs[value];
 
                 try
                 {
-                    if (targetEditor == null) Editor.CreateCachedEditorWithContext(value, target, null, ref targetEditor);
-                    else if (!targetEditor.serializedObject.targetObject.Equals(targetEditor)) Editor.CreateCachedEditorWithContext(value, target, null, ref targetEditor);
+                    if (targetEditor == null) Editor.CreateCachedEditor(value, null, ref targetEditor);
+                    else if (!targetEditor.serializedObject.targetObject.Equals(targetEditor)) Editor.CreateCachedEditor(value, null, ref targetEditor);
                 }
 
                 catch
@@ -375,53 +375,53 @@ namespace com.absence.attributes.editor
 
         #region Layout Begin Methods
 
-        static void OnBeginFoldout(BaseBeginLayoutAttribute beginFoldoutAttribute)
+        static void OnBeginFoldout(absentEditorExtension editor, BaseBeginLayoutAttribute beginFoldoutAttribute)
         {
             BeginFoldoutGroupAttribute foldoutAttribute =
                 beginFoldoutAttribute as BeginFoldoutGroupAttribute;
 
             bool isExpanded = false;
-            if (!s_togglePairs.ContainsKey(foldoutAttribute))
-                s_togglePairs.Add(foldoutAttribute, isExpanded);
+            if (!editor.m_togglePairs.ContainsKey(foldoutAttribute))
+                editor.m_togglePairs.Add(foldoutAttribute, isExpanded);
             else
-                isExpanded = s_togglePairs[foldoutAttribute];
+                isExpanded = editor.m_togglePairs[foldoutAttribute];
 
             GUIStyle style = new(EditorStyles.foldout)
             {
                 richText = true,
             };
 
-            if (!s_foldoutBlocks)
+            if (!editor.m_foldoutBlocks)
             {
                 isExpanded = EditorGUILayout.Foldout(isExpanded, beginFoldoutAttribute.label,
                 foldoutAttribute.toggleOnLabelClick, style);
 
-                s_togglePairs[foldoutAttribute] = isExpanded;
+                editor.m_togglePairs[foldoutAttribute] = isExpanded;
             }
 
             EditorGUI.indentLevel++;
-            s_foldoutDifference++;
+            editor.m_foldoutDifference++;
 
-            if (!isExpanded) s_foldoutBlocks = true;
+            if (!isExpanded) editor.m_foldoutBlocks = true;
 
-            s_activeFoldoutGroups.Push(isExpanded);
+            editor.m_activeFoldoutGroups.Push(isExpanded);
         }
 
-        static void OnBeginReadonly(BaseBeginLayoutAttribute beginReadonlyAttribute)
+        static void OnBeginReadonly(absentEditorExtension editor, BaseBeginLayoutAttribute beginReadonlyAttribute)
         {
-            s_readonlyDifference++;
+            editor.m_readonlyDifference++;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             GUI.enabled = false;
         }
 
-        static void OnBeginVertical(BaseBeginLayoutAttribute beginVertical)
+        static void OnBeginVertical(absentEditorExtension editor, BaseBeginLayoutAttribute beginVertical)
         {
-            s_verticalDifference++;
+            editor.m_verticalDifference++;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             GUIStyle style2 = new(EditorStyles.label)
@@ -454,11 +454,11 @@ namespace com.absence.attributes.editor
             }
         }
 
-        static void OnBeginHorizontal(BaseBeginLayoutAttribute beginHorizontal)
+        static void OnBeginHorizontal(absentEditorExtension editor, BaseBeginLayoutAttribute beginHorizontal)
         {
-            s_horizontalDifference++;
+            editor.m_horizontalDifference++;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             GUIStyle style2 = new(EditorStyles.label)
@@ -495,53 +495,53 @@ namespace com.absence.attributes.editor
 
         #region Layout End Methods
 
-        static void OnEndHorizontal(BaseEndLayoutAttribute endHorizontal)
+        static void OnEndHorizontal(absentEditorExtension editor, BaseEndLayoutAttribute endHorizontal)
         {
-            s_horizontalDifference--;
+            editor.m_horizontalDifference--;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             EditorGUILayout.EndHorizontal();
         }
 
-        static void OnEndVertical(BaseEndLayoutAttribute endVertical)
+        static void OnEndVertical(absentEditorExtension editor, BaseEndLayoutAttribute endVertical)
         {
-            s_verticalDifference--;
+            editor.m_verticalDifference--;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             EditorGUILayout.EndVertical();
         }
 
-        static void OnEndReadonly(BaseEndLayoutAttribute endReadonly)
+        static void OnEndReadonly(absentEditorExtension editor, BaseEndLayoutAttribute endReadonly)
         {
-            s_readonlyDifference--;
+            editor.m_readonlyDifference--;
 
-            if (s_foldoutBlocks)
+            if (editor.m_foldoutBlocks)
                 return;
 
             GUI.enabled = true;
         }
 
-        static void OnEndFoldout(BaseEndLayoutAttribute endFoldout)
+        static void OnEndFoldout(absentEditorExtension editor, BaseEndLayoutAttribute endFoldout)
         {
             EditorGUI.indentLevel--;
-            s_foldoutDifference--;
+            editor.m_foldoutDifference--;
 
-            if (s_foldoutDifference <= 0)
+            if (editor.m_foldoutDifference <= 0)
             {
-                s_foldoutBlocks = false;
+                editor.m_foldoutBlocks = false;
                 return;
             }
 
-            s_activeFoldoutGroups.Pop();
+            editor.m_activeFoldoutGroups.Pop();
 
-            var foldoutHistory = s_activeFoldoutGroups.ToList().GetRange(0, s_foldoutDifference).
+            var foldoutHistory = editor.m_activeFoldoutGroups.ToList().GetRange(0, editor.m_foldoutDifference).
                 ToList();
 
-            s_foldoutBlocks = foldoutHistory.Any(foldout => false);
+            editor.m_foldoutBlocks = foldoutHistory.Any(foldout => false);
         }
 
         #endregion
