@@ -61,10 +61,7 @@ namespace com.absence.attributes.editor
         /// <returns>Return false if there are no methods with the corresponding id, true otherwise.</returns>
         public static bool Invoke(int id)
         {
-            if (!s_pairs.ContainsKey(id)) return false;
-
-            s_pairs[id].Invoke(null, null);
-            return true;
+            return Invoke(id, out _);
         }
 
         /// <summary>
@@ -92,17 +89,7 @@ namespace com.absence.attributes.editor
         /// <returns>Returns false if anything goes wrong or if simply the button does not get pressed, true otherwise.</returns>
         public static bool ButtonGUI(int id, GUIContent content, GUIStyle style, params GUILayoutOption[] options)
         {
-            bool pressed = DrawButton(content, style, options);
-
-            if (!pressed)
-                return false;
-
-            bool result = Invoke(id);
-
-            if (!result)
-                Debug.Log("There are no actions associated with this button at the moment. Create one with 'FieldButtonId' attribute.");
-
-            return result;
+            return ButtonGUI(id, content, style, out _, options);
         }
 
         /// <summary>
@@ -126,7 +113,7 @@ namespace com.absence.attributes.editor
             bool result = Invoke(id, out output);
 
             if (!result)
-                Debug.Log("There are no actions associated with this button at the moment. Create one with 'FieldButtonId' attribute.");
+                Debug.Log($"There are no actions associated with this button at the moment (id = {id}). Create one with 'FieldButtonId' attribute.");
 
             return result;
         }
