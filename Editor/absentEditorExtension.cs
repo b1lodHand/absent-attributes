@@ -259,6 +259,8 @@ namespace com.absence.attributes.editor
 
             DrawFullInlineEditor();
 
+            return;
+
             void DrawFieldWithNewButton(int buttonId)
             {
                 EditorGUILayout.BeginHorizontal();
