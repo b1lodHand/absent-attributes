@@ -93,6 +93,8 @@ namespace com.absence.attributes.editor
 
             while (iterator.NextVisible(enterChildren))
             {
+                enterChildren = false;
+
                 #region Initialization
 
                 FieldInfo fieldInfo = null;
@@ -153,8 +155,6 @@ namespace com.absence.attributes.editor
                     var attr = endAttributes[i];
                     s_endActions[attr.GetType()]?.Invoke(attr);
                 }
-
-                enterChildren = false;
             }
 
             if (s_readonlyDifference != 0)
