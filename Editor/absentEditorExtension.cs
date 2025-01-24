@@ -289,6 +289,8 @@ namespace com.absence.attributes.editor
 
             void DrawFullInlineEditor()
             {
+                Debug.Log(target.name);
+
                 GUIStyle style3 = new(EditorStyles.foldout)
                 {
                     richText = true,
