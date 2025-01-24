@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 namespace com.absence.attributes.editor
@@ -11,6 +12,7 @@ namespace com.absence.attributes.editor
     /// </summary>
     public static class FieldButtonManager
     {
+        public const bool DEBUG_MODE = false;
         public const BindingFlags FLAGS = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
         static Dictionary<int, MethodInfo> s_pairs;
@@ -21,13 +23,13 @@ namespace com.absence.attributes.editor
         /// Use to refresh 'n get all methods marked with the <see cref="FieldButtonIdAttribute"/>.
         /// Automatically gets called when editor initializes.
         /// </summary>
-        public static void Refresh()
+        public static void Refresh(bool debugMode = DEBUG_MODE)
         {
             s_pairs = new();
 
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             List<Type> allTypes = new();
-            List<MethodInfo> temp = new();
+            List<(FieldButtonIdAttribute attr, MethodInfo method)> temp = new();
 
             assemblies.ForEach(asm =>
             {
@@ -37,21 +39,49 @@ namespace com.absence.attributes.editor
 
             allTypes.ForEach(type =>
             {
-                List<MethodInfo> localMethods = type.GetMethods(FLAGS).Where(method =>
-                {
-                    return (!method.IsGenericMethod) && (method.GetCustomAttributes(typeof(FieldButtonIdAttribute), false).Length > 0);
-                }).ToList();
+                List<MethodInfo> localMethods = type.GetMethods(FLAGS).ToList();
 
-                localMethods.ForEach(method => temp.Add(method));
+                localMethods.ForEach(method =>
+                {
+                    if (method.IsGenericMethod) return;
+                    
+                    List<FieldButtonIdAttribute> attributes = 
+                        method.GetCustomAttributes(typeof(FieldButtonIdAttribute), true).ToList().
+                        ConvertAll(obj => obj as FieldButtonIdAttribute);
+
+                    if (attributes == null) return;
+
+                    attributes.ForEach(attr =>
+                    {
+                        temp.Add((attr, method));
+                    });
+                });
             });
 
             if (temp.Count == 0) return;
 
-            temp.ForEach(method =>
+            List<(FieldButtonIdAttribute attr, MethodInfo method)> orderedAttributes = 
+                temp.OrderByDescending(tuple => tuple.attr.priority).ToList();
+
+            for (int i = 0; i < orderedAttributes.Count; i++)
             {
-                FieldButtonIdAttribute attribute = method.GetCustomAttribute<FieldButtonIdAttribute>();
-                s_pairs.Add(attribute.id, method);
-            });
+                FieldButtonIdAttribute attr = orderedAttributes[i].attr;
+                MethodInfo method = orderedAttributes[i].method;
+
+                if (!s_pairs.ContainsKey(attr.id))
+                    s_pairs.Add(attr.id, method);
+            }
+
+            if (!debugMode) return;
+
+            StringBuilder sb = new("<b>[ATTRIBUTES] Found FieldButtonId Methods:</b>");
+
+            foreach (KeyValuePair<int, MethodInfo> kvp in s_pairs) 
+            {
+                sb.Append($"\n\t{kvp.Key} => {kvp.Value.Name}");
+            }
+
+            Debug.Log(sb.ToString());
         }
 
         /// <summary>
@@ -142,12 +172,11 @@ namespace com.absence.attributes.editor
 
         #region Built-in Methods
 
-        [FieldButtonId(0)]
+        [FieldButtonId(0, priority = -1)]
         static void NullId()
         {
             Debug.Log("This is the default field button method (id = 0).");
         }
-
         #endregion
     }
 }

@@ -18,6 +18,7 @@ namespace com.absence.attributes
     public class FieldButtonIdAttribute : Attribute
     {
         public int id;
+        public int priority = 0;
 
         public FieldButtonIdAttribute(int id)
         {

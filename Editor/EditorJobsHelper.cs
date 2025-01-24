@@ -12,5 +12,11 @@ namespace com.absence.attributes.editor
         {
             FieldButtonManager.Refresh();
         }
+
+        [MenuItem("absencee_/absent-attributes/Refresh FieldButtonId Database")]
+        static void PrintFieldButtonIds()
+        {
+            FieldButtonManager.Refresh(true);
+        }
     }
 }
