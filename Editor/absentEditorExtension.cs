@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace com.absence.attributes.editor
 {
-    [CustomEditor(typeof(UnityEngine.Object), true)]
+    [CustomEditor(typeof(UnityEngine.Object), true, isFallback = true)]
     public class absentEditorExtension : Editor
     {
         Dictionary<string, FieldInfo> m_fieldInfos = new();
