@@ -239,6 +239,18 @@ namespace com.absence.attributes.editor
 
             EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
         }
+        void DrawDefaultField(Rect rect, SerializedProperty iterator, string overrideLabel = null)
+        {
+            if (overrideLabel == null) overrideLabel = iterator.displayName;
+
+            EditorGUI.PropertyField(rect, iterator, new(overrideLabel), true);
+        }
+        void DrawDefaultFieldNonLayout(Rect rect, SerializedProperty iterator, string overrideLabel = null)
+        {
+            if (overrideLabel == null) overrideLabel = iterator.displayName;
+
+            EditorGUILayout.PropertyField(iterator, new(overrideLabel), true);
+        }
         void DrawInlineEditorField(SerializedProperty iterator, InlineEditorAttribute inlineEditorAttribute, UnityEngine.Object target)
         {
             UnityEngine.Object value = iterator.objectReferenceValue;
@@ -268,7 +280,7 @@ namespace com.absence.attributes.editor
                 DrawDefaultField(iterator);
 
                 bool buttonPressedSuccessfully = FieldButtonManager.
-                    ButtonGUI(buttonId, new(buttonText), null, new object[] { target }, out object buttonOutput,
+                    ButtonGUI(buttonId, buttonText, null, new object[] { target }, out object buttonOutput,
                     GUILayout.MaxWidth(40f));
 
                 EditorGUILayout.EndHorizontal();
@@ -287,6 +299,20 @@ namespace com.absence.attributes.editor
                 //}
             }
 
+            void DrawFieldWithButtonNonLayout(Rect rect, int buttonId, string buttonText)
+            {
+                float totalWidth = rect.width;
+                rect.width = totalWidth - (40f + EditorGUIUtility.standardVerticalSpacing);
+
+                DrawDefaultField(rect, iterator);
+
+                rect.x += rect.width;
+                rect.width = 40f;
+
+                bool buttonPressedSuccessfully = FieldButtonManager.
+                    ButtonGUI(rect, buttonId, buttonText, null, new object[] { target }, out object buttonOutput);
+            }
+
             void DrawFullInlineEditor()
             {
                 GUIStyle style3 = new(EditorStyles.foldoutHeader)
@@ -297,7 +323,7 @@ namespace com.absence.attributes.editor
 
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 EditorGUILayout.BeginHorizontal();
-
+                
                 EditorGUI.indentLevel++;
 
                 int delButtonId = inlineEditorAttribute.delButtonId;
@@ -313,6 +339,10 @@ namespace com.absence.attributes.editor
                 rect.x -= spacing;
                 rect.x -= height;
                 rect.width += height;
+
+                float difference = rect.height - height;
+                rect.y += difference;
+
                 rect.height = height;
 
                 iterator.isExpanded = EditorGUI.Foldout(rect, iterator.isExpanded,

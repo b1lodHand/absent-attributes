@@ -111,6 +111,15 @@ namespace com.absence.attributes.editor
             return true;
         }
 
+        public static bool ButtonGUI(int id, string label, GUIStyle style, object[] args, params GUILayoutOption[] options) 
+        {
+            return ButtonGUI(id, new GUIContent(label), style, args, options);
+        }
+        public static bool ButtonGUI(int id, string label, GUIStyle style, object[] args, out object output, params GUILayoutOption[] options)
+        {
+            return ButtonGUI(id, new GUIContent(label), style, args, out output, options);
+        }
+
         /// <summary>
         /// Use to draw a button with IMGUI in editor that invokes a field button method.
         /// </summary>
@@ -151,6 +160,38 @@ namespace com.absence.attributes.editor
             return result;
         }
 
+        public static bool ButtonGUI(Rect rect, int id, string label, GUIStyle style, object[] args)
+        {
+            return ButtonGUI(rect, id, new GUIContent(label), style, args);
+        }
+
+        public static bool ButtonGUI(Rect rect, int id, string label, GUIStyle style, object[] args, out object output)
+        {
+            return ButtonGUI(rect, id, new GUIContent(label), style, args, out output);
+        }
+
+        public static bool ButtonGUI(Rect rect, int id, GUIContent content, GUIStyle style, object[] args)
+        {
+            return ButtonGUI(rect, id, content, style, args, out _);
+        }
+
+        public static bool ButtonGUI(Rect rect, int id, GUIContent content, GUIStyle style, object[] args, out object output)
+        {
+            output = null;
+
+            bool pressed = DrawButton(rect, content, style);
+
+            if (!pressed)
+                return false;
+
+            bool result = Invoke(id, out output, args);
+
+            if (!result)
+                Debug.Log($"There are no actions associated with this button at the moment (id = {id}). Create one with 'FieldButtonId' attribute.");
+
+            return result;
+        }
+
         #endregion
 
         #region Internal
@@ -167,6 +208,22 @@ namespace com.absence.attributes.editor
 
             if (hasStyle) pressed = GUILayout.Button(content, style, options);
             else pressed = GUILayout.Button(content, options);
+
+            return pressed;
+        }
+
+        static bool DrawButton(Rect rect, GUIContent content, GUIStyle style)
+        {
+            bool hasContent = content != null;
+
+            if (!hasContent)
+                throw new Exception("Button can not get drawn without content!");
+
+            bool pressed;
+            bool hasStyle = style != null;
+
+            if (hasStyle) pressed = GUI.Button(rect, content, style);
+            else pressed = GUI.Button(rect, content);
 
             return pressed;
         }
