@@ -8,12 +8,14 @@ namespace com.absence.attributes.editor
     public class InlinePropertyDrawer : PropertyDrawer
     {
         private Dictionary<string, Vector2> m_pathScrollPairs = new();
+        private Dictionary<string, float> m_pathHeightPairs = new();
 
         const int k_constantLineCount = 1;
-        const float k_inlineEditorWidth = 400f;
+        const float k_inlineEditorHeight = 500f;
         const float k_buttonWidth = 40f;
-        const float k_majorSpacing = 10f;
-        const float k_inlineEditorPadding = 0f;
+        const float k_fieldBoxPadding = 2f;
+        const float k_majorSpacing = 2f;
+        const float k_inlineEditorPadding = 20f;
 
         InlineAttribute inline => attribute as InlineAttribute;
 
@@ -27,17 +29,41 @@ namespace com.absence.attributes.editor
 
             UnityEngine.Object objectReferenceValue = property.objectReferenceValue;
 
+            float inlineHeight = 0f;
+
             if (objectReferenceValue == null)
                 return (k_constantLineCount * (spacing + height));
+            else
+            {
+                SerializedObject so = new SerializedObject(objectReferenceValue);
+                SerializedProperty iterator = so.GetIterator();
+                bool enterChildren = true;
+                while (iterator.NextVisible(enterChildren))
+                {
+                    using (new EditorGUI.DisabledScope("m_Script" == iterator.propertyPath))
+                    {
+                        inlineHeight += EditorGUI.GetPropertyHeight(iterator, true);
+                    }
+
+                    enterChildren = false;
+                }
+            }
+
+            float realInlineHeight = Mathf.Min(inlineHeight, k_inlineEditorHeight);
+
+            if (m_pathHeightPairs.ContainsKey(property.propertyPath))
+                m_pathHeightPairs[property.propertyPath] = inlineHeight;
+            else 
+                m_pathHeightPairs.Add(property.propertyPath, inlineHeight);
 
             int totalLines = k_constantLineCount;
 
             float addition = 0f;
 
             if (objectReferenceValue != null && property.isExpanded) 
-                addition += k_inlineEditorWidth + (k_inlineEditorPadding * 2) + spacing + k_majorSpacing;
+                addition += realInlineHeight + (k_inlineEditorPadding * 2) + spacing + k_majorSpacing;
 
-            return (totalLines * (spacing + height)) + addition;
+            return (totalLines * (spacing + height)) + addition + k_fieldBoxPadding;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -56,9 +82,12 @@ namespace com.absence.attributes.editor
             EditorGUI.BeginProperty(position, label, property);
 
             position.height = EditorGUIUtility.singleLineHeight;
+            position.height += k_fieldBoxPadding;
 
             if (objectReferenceValue != null)
                 EditorGUI.DrawRect(position, color);
+
+            position.height -= k_fieldBoxPadding;
 
             EditorGUI.indentLevel++;
 
@@ -110,7 +139,9 @@ namespace com.absence.attributes.editor
             position.width = normalWidth;
 
             position.y += step;
-            position.height = k_inlineEditorWidth;
+            position.y += k_majorSpacing;
+            position.y += k_inlineEditorPadding / 2;
+            position.height = Mathf.Min(m_pathHeightPairs[property.propertyPath], k_inlineEditorHeight);
 
             if (objectReferenceValue != null && property.isExpanded)
             {
@@ -130,29 +161,15 @@ namespace com.absence.attributes.editor
 
                 SerializedObject so = new SerializedObject(objectReferenceValue);
 
-                SerializedProperty iterator = so.GetIterator();
                 Rect total = position;
-                total.height = 0f;
-                bool enterChildren = true;
-                while (iterator.NextVisible(enterChildren))
-                {
-                    using (new EditorGUI.DisabledScope("m_Script" == iterator.propertyPath))
-                    {
-                        total.height += EditorGUI.GetPropertyHeight(iterator, true);
-                    }
-
-                    enterChildren = false;
-                }
-
-                position.height = Mathf.Min(total.height, position.height);
+                total.height = m_pathHeightPairs[property.propertyPath];
                 using (GUI.ScrollViewScope scope = new GUI.ScrollViewScope(position, scrollValue, total))
                 {
                     DoDrawDefaultInspector(position, so);
                     m_pathScrollPairs[property.propertyPath] = scope.scrollPosition;
                 }
 
-                position.y += k_inlineEditorWidth;
-                position.y += k_majorSpacing;
+                position.y += k_inlineEditorHeight;
             }
 
             position.height = height;
