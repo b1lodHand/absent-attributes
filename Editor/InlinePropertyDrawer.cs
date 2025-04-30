@@ -141,10 +141,11 @@ namespace com.absence.attributes.editor
             position.y += step;
             position.y += k_majorSpacing;
             position.y += k_inlineEditorPadding / 2;
-            position.height = Mathf.Min(m_pathHeightPairs[property.propertyPath], k_inlineEditorHeight);
 
             if (objectReferenceValue != null && property.isExpanded)
             {
+                position.height = Mathf.Min(m_pathHeightPairs[property.propertyPath], k_inlineEditorHeight);
+
                 position.y -= k_inlineEditorPadding / 2;
                 position.height += k_inlineEditorPadding;
 
